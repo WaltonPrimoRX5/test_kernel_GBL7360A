@@ -1,0 +1,30 @@
+os: linux
+dist: xenial
+
+sudo: required
+
+git:
+  depth: 3
+
+addons:
+  apt:
+    update:
+    - true
+
+before_install:
+  - git clone https://github.com/rokibhasansagar/linaro-toolchain-latest -b latest-4 ~/toolchain/
+  - sudo chmod -R a+x ~/toolchain/*
+
+install: true
+
+script:
+  - mkdir out
+  - make O=out clean
+  - make O=out mrproper
+  - export CROSS_COMPILE=~/toolchain/bin/aarch64-linux-gnu-
+  - export ARCH=arm64 
+  - export KBUILD_BUILD_USER="fr3aky"
+  - export KBUILD_BUILD_HOST="Phantom_Zone"
+  - export ARCH_MTK_PLATFORM=mt6735
+  - make O=out ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE CP8298_I00_defconfig
+  - make O=out ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j32
